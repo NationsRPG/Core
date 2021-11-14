@@ -1,0 +1,16 @@
+#
+# Configuration for NationsRPG Core Plugin
+#
+# Authored by byteful#0001
+#
+
+# Settings for MySQL connection.
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  pass: "password"
+  database: "NationsRPG"
+
+# The class for the map that should be used for spawn.
+map: "com.nationsrpg.plugin.core.maps.ClassicSpawnMap"
