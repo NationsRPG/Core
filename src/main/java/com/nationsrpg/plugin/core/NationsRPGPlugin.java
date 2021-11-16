@@ -5,7 +5,6 @@ import co.aikar.commands.PaperCommandManager;
 import com.nationsrpg.plugin.core.api.map.SpawnMap;
 import com.nationsrpg.plugin.core.managers.AddonManager;
 import com.nationsrpg.plugin.core.models.nation.NationStructure;
-import com.nationsrpg.plugin.core.models.profile.ProfileStructure;
 import com.nationsrpg.plugin.core.models.user.UserStructure;
 import me.byteful.lib.datastore.api.ModelManager;
 import me.byteful.lib.datastore.api.data.DataStore;
@@ -75,7 +74,6 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
     bind(dataStore);
 
     ModelManager.registerModelStructure(new NationStructure());
-    ModelManager.registerModelStructure(new ProfileStructure());
     ModelManager.registerModelStructure(new UserStructure());
   }
 
