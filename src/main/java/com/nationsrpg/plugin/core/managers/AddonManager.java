@@ -31,7 +31,7 @@ public final class AddonManager {
         .filter(
             e ->
                 /*!e.isCancelled()
-                    &&*/ e.hasItem()
+                &&*/ e.hasItem()
                     && e.getItem() != null
                     && e.getAction() != Action.PHYSICAL)
         .handler(
@@ -55,7 +55,7 @@ public final class AddonManager {
         .bindWith(plugin);
 
     Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGHEST)
-        .filter(e -> /*!e.isCancelled() && */e.hasBlock() && e.getClickedBlock() != null)
+        .filter(e -> /*!e.isCancelled() && */ e.hasBlock() && e.getClickedBlock() != null)
         .handler(
             e -> {
               final Block block = e.getClickedBlock();

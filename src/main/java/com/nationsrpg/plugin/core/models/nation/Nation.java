@@ -1,6 +1,8 @@
 package com.nationsrpg.plugin.core.models.nation;
 
+import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import me.byteful.lib.datastore.api.model.Model;
+import me.byteful.lib.datastore.api.model.impl.JSONModelId;
 import me.lucko.helper.utils.Players;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +12,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public record Nation(@NotNull UUID uuid, @NotNull UUID leader) implements Model {
+  @NotNull
+  public static Nation create(@NotNull UUID leader) {
+    final UUID uuid = UUID.randomUUID();
+    final Nation nation = new Nation(uuid, leader);
+    NationsRPGPlugin.getInstance().getDataStore().set(JSONModelId.of("id", uuid.toString()), nation);
+
+    return nation;
+  }
+
   @NotNull
   public Optional<Player> getLeaderPlayer() {
     return Players.get(leader);

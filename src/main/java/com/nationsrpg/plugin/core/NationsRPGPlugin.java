@@ -17,14 +17,21 @@ import me.lucko.helper.utils.Log;
 import java.lang.reflect.InvocationTargetException;
 
 public final class NationsRPGPlugin extends ExtendedJavaPlugin {
+  private static NationsRPGPlugin instance;
+
   private DataStore dataStore;
   private ConfigurationNode settings;
   private SpawnMap spawn;
   private AddonManager addonManager;
   private BukkitCommandManager commandManager;
 
+  public static NationsRPGPlugin getInstance() {
+    return instance;
+  }
+
   @Override
   protected void enable() {
+    instance = this;
     settings = loadConfigNode("config.yml");
     Log.info("Loaded configuration...");
 
@@ -53,6 +60,7 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
     Log.info(
         "Successfully stopped NationsRPG Core Plugin. All core services are no longer available.");
+    instance = null;
   }
 
   private void loadDataStore() {

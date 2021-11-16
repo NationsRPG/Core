@@ -145,5 +145,7 @@ gradle-app.setting
 .classpath
 
 !/libs/
+!/libs/*
+!/libs/*.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,java,gradle
