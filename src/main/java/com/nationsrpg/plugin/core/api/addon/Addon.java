@@ -2,6 +2,7 @@ package com.nationsrpg.plugin.core.api.addon;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public interface Addon {
@@ -18,4 +19,7 @@ public interface Addon {
   Material getMaterial();
 
   int getCustomModelData();
+
+  @NotNull
+  ItemStack buildItemStack();
 }

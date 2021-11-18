@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 public enum Message {
   SERVER_RESTART_TITLE(FormatUtils.fromLegacyText("&cRestarting in...")),
   SERVER_RESTART_SUBTITLE(FormatUtils.fromLegacyText("&c%s more seconds!")),
+  ADDON_GUI_ADD(FormatUtils.fromLegacyText("&aSuccessfully added %s into your inventory.")),
+  ADDON_GUI_FULL(
+      FormatUtils.fromLegacyText("&cFailed to add item because your inventory is full!")),
   RESTART_REQUEST_CANCELLED(FormatUtils.fromLegacyText("&cRestart request was cancelled."));
 
   @NotNull private final TextComponent message;
