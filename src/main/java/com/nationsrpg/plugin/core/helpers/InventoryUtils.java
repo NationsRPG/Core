@@ -5,6 +5,7 @@ import me.lucko.helper.menu.Gui;
 import me.lucko.helper.menu.Item;
 import me.lucko.helper.menu.Slot;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -40,5 +41,9 @@ public final class InventoryUtils {
         setSlot(gui, x, y, item);
       }
     }
+  }
+
+  public static boolean isBukkitInventoryFull(@NotNull Inventory inventory) {
+    return inventory.firstEmpty() == -1;
   }
 }

@@ -1,50 +1,81 @@
 package com.nationsrpg.plugin.core.guis.misc;
 
-import com.nationsrpg.plugin.core.addons.item.GearItemAddon;
-import com.nationsrpg.plugin.core.api.addon.AbstractItemAddon;
+import com.nationsrpg.plugin.core.data.Message;
 import com.nationsrpg.plugin.core.helpers.InventoryUtils;
-import me.lucko.helper.item.ItemStackBuilder;
-import me.lucko.helper.menu.Gui;
+import com.nationsrpg.plugin.core.helpers.MessageUtils;
+import com.nationsrpg.plugin.core.managers.AddonManager;
 import me.lucko.helper.menu.Item;
+import me.lucko.helper.menu.paginated.PaginatedGuiBuilder;
+import me.lucko.helper.text3.Text;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AddonGUI extends Gui {
+public class AddonGUI {
+  //  private AddonGUI(Player player, int lines, String title) {
+  //    super(player, lines, title);
+  //  }
+  //
+  //  @Override
+  //  public void redraw() {
+  //    if (isFirstDraw()) {
+  //      AbstractItemAddon gearItem = itemAddons.get(GearItemAddon.class);
+  //      final Item gearItemAddon =
+  //          ItemStackBuilder.of(gearItem.getMaterial())
+  //              .build(() -> {
+  //                close();
+  //                getPlayer().getInventory().addItem(gearItem.buildItemStack());
+  //              });
+  //
+  //      InventoryUtils.populateBackground(this);
+  //
+  //      InventoryUtils.fill(1, 1, 1, 1, gearItemAddon, this);
+  //    }
+  //  }
 
-  private static Map<Class<?>, AbstractItemAddon> itemAddons = new HashMap<>();
-  static {
-    itemAddons.put(GearItemAddon.class, new GearItemAddon());
-  }
+  public static void open(@NotNull AddonManager addonManager, @NotNull Player openFor) {
+    //    final AddonGUI gui = new AddonGUI(player, 1, "&f&lItem Addons");
+    //
+    //    gui.open();
 
-  private AddonGUI(Player player, int lines, String title) {
-    super(player, lines, title);
-  }
+    PaginatedGuiBuilder.create()
+        .title(Text.colorize("&f&lAddons"))
+        .build(
+            openFor,
+            (gui) -> {
+              final Player player = gui.getPlayer();
+              final List<Item> items = new ArrayList<>();
 
-  @Override
-  public void redraw() {
+              addonManager
+                  .getAddons()
+                  .values()
+                  .forEach(
+                      addon -> {
+                        items.add(
+                            Item.builder(addon.buildItemStack())
+                                .bind(
+                                    () -> {
+                                      if (InventoryUtils.isBukkitInventoryFull(
+                                          player.getInventory())) {
+                                        MessageUtils.sendMessage(player, Message.ADDON_GUI_FULL);
 
-    if (isFirstDraw()) {
+                                        return;
+                                      }
 
-      AbstractItemAddon gearItem = itemAddons.get(GearItemAddon.class);
-      final Item gearItemAddon =
-          ItemStackBuilder.of(gearItem.getMaterial())
-              .build(() -> {
-                close();
-                getPlayer().getInventory().addItem(gearItem.buildItemStack());
-              });
+                                      player.getInventory().addItem(addon.buildItemStack());
+                                      MessageUtils.sendMessage(
+                                          player, Message.ADDON_GUI_ADD, addon.getName());
+                                    },
+                                    ClickType.RIGHT,
+                                    ClickType.LEFT)
+                                .build());
+                      });
 
-      InventoryUtils.populateBackground(this);
-
-      InventoryUtils.fill(1, 1, 1, 1, gearItemAddon, this);
-    }
-  }
-
-  public static void open(@NotNull Player player) {
-    final AddonGUI gui = new AddonGUI(player, 1, "&f&lItem Addons");
-
-    gui.open();
+              return items;
+            })
+        .open();
   }
 }
