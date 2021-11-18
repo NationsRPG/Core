@@ -36,6 +36,7 @@ public abstract class AbstractBasicAddon implements Addon {
     this.customModelData = customModelData;
   }
 
+  @Override
   @NotNull
   public ItemStack buildItemStack() {
     final NBTItem nbt =
