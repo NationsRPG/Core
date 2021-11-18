@@ -60,10 +60,12 @@ public class AdminPanelGUI extends Gui {
                         ConfirmGUI.open(
                             getPlayer(),
                             (result) -> {
-                              if (result) ServerUtils.startServerRestart(30);
-                              else
+                              if (result) {
+                                ServerUtils.startServerRestart(30);
+                              } else {
                                 MessageUtils.sendMessage(
                                     getPlayer(), Message.RESTART_REQUEST_CANCELLED);
+                              }
                             });
                       }));
 
