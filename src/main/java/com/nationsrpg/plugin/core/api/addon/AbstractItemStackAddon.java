@@ -1,42 +1,45 @@
 package com.nationsrpg.plugin.core.api.addon;
 
+import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import com.nationsrpg.plugin.core.helpers.FormatUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.text3.Text;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
-public abstract class AbstractBasicAddon implements Addon {
-  @NotNull private final NamespacedKey id;
-  @NotNull private final String name;
-  @NotNull private final String[] lore;
-  @NotNull private final Material material;
+public abstract class AbstractItemStackAddon implements Addon {
+  @NotNull
+  private final NamespacedKey id;
+  @NotNull
+  private final String name;
+  @NotNull
+  private final String[] lore;
+  @NotNull
+  private final Material material;
   private final int customModelData;
 
-  protected AbstractBasicAddon(
+  protected AbstractItemStackAddon(
+      @NotNull NationsRPGPlugin plugin,
       @NotNull String id,
       @NotNull String name,
       @NotNull String[] lore,
       @NotNull Material material,
       int customModelData) {
-    this.id =
-        new NamespacedKey(
-            Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("NationsRPG")),
-            "addon_" + id);
+    this.id = new NamespacedKey(plugin, "addon_" + id);
     this.name = name;
     this.lore = lore;
     this.material = material;
     this.customModelData = customModelData;
   }
 
-  @Override
+  @NotNull
+  public abstract Recipe getRecipe();
+
   @NotNull
   public ItemStack buildItemStack() {
     final NBTItem nbt =
@@ -66,18 +69,15 @@ public abstract class AbstractBasicAddon implements Addon {
   }
 
   @NotNull
-  @Override
   public String[] getLore() {
     return lore;
   }
 
   @NotNull
-  @Override
   public Material getMaterial() {
     return material;
   }
 
-  @Override
   public int getCustomModelData() {
     return customModelData;
   }

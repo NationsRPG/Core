@@ -12,5 +12,5 @@ mysql:
   pass: "password"
   database: "NationsRPG"
 
-# The class for the map that should be used for spawn.
+# The class for the map that should be used for spawn. Has to be implemented by com.nationsrpg.plugin.core.api.map.SpawnMap.
 map: "com.nationsrpg.plugin.core.maps.ClassicSpawnMap"

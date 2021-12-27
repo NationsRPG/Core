@@ -1,5 +1,6 @@
 package com.nationsrpg.plugin.core.guis.misc;
 
+import com.nationsrpg.plugin.core.api.addon.AbstractItemStackAddon;
 import com.nationsrpg.plugin.core.data.Message;
 import com.nationsrpg.plugin.core.helpers.InventoryUtils;
 import com.nationsrpg.plugin.core.helpers.MessageUtils;
@@ -54,24 +55,26 @@ public class AddonGUI {
                   .values()
                   .forEach(
                       addon -> {
-                        items.add(
-                            Item.builder(addon.buildItemStack())
-                                .bind(
-                                    () -> {
-                                      if (InventoryUtils.isBukkitInventoryFull(
-                                          player.getInventory())) {
-                                        MessageUtils.sendMessage(player, Message.ADDON_GUI_FULL);
+                        if (addon instanceof final AbstractItemStackAddon itemStackAddon) {
+                          items.add(
+                              Item.builder(itemStackAddon.buildItemStack())
+                                  .bind(
+                                      () -> {
+                                        if (InventoryUtils.isBukkitInventoryFull(
+                                            player.getInventory())) {
+                                          MessageUtils.sendMessage(player, Message.ADDON_GUI_FULL);
 
-                                        return;
-                                      }
+                                          return;
+                                        }
 
-                                      player.getInventory().addItem(addon.buildItemStack());
-                                      MessageUtils.sendMessage(
-                                          player, Message.ADDON_GUI_ADD, addon.getName());
-                                    },
-                                    ClickType.RIGHT,
-                                    ClickType.LEFT)
-                                .build());
+                                        player.getInventory().addItem(itemStackAddon.buildItemStack());
+                                        MessageUtils.sendMessage(
+                                            player, Message.ADDON_GUI_ADD, addon.getName());
+                                      },
+                                      ClickType.RIGHT,
+                                      ClickType.LEFT)
+                                  .build());
+                        }
                       });
 
               return items;
