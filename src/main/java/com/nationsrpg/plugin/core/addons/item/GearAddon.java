@@ -1,7 +1,7 @@
 package com.nationsrpg.plugin.core.addons.item;
 
+import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import com.nationsrpg.plugin.core.api.addon.AbstractItemAddon;
-import com.nationsrpg.plugin.core.api.addon.CraftableAddon;
 import com.nationsrpg.plugin.core.helpers.ShapedRecipeBuilder;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-public class GearItemAddon extends AbstractItemAddon implements CraftableAddon {
-  public GearItemAddon() {
-    super("gear", "&f&lGear", new String[0], Material.STICK, 1);
+public class GearAddon extends AbstractItemAddon {
+  public GearAddon(@NotNull NationsRPGPlugin plugin) {
+    super(plugin, "gear", "&f&lGear", new String[0], Material.STICK, 1);
   }
 
   @Override

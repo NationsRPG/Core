@@ -1,7 +1,7 @@
 package com.nationsrpg.plugin.core.managers;
 
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
-import com.nationsrpg.plugin.core.addons.item.GearItemAddon;
+import com.nationsrpg.plugin.core.addons.item.GearAddon;
 import com.nationsrpg.plugin.core.api.addon.AbstractBlockAddon;
 import com.nationsrpg.plugin.core.api.addon.AbstractItemAddon;
 import com.nationsrpg.plugin.core.api.addon.Addon;
@@ -9,6 +9,7 @@ import com.nationsrpg.plugin.core.data.DataBlock;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.lucko.helper.Events;
 import org.bukkit.block.Block;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -25,15 +26,14 @@ public final class AddonManager {
   @NotNull private final Map<String, Addon> addonMap = new HashMap<>();
 
   public AddonManager(@NotNull NationsRPGPlugin plugin) {
-    register(new GearItemAddon());
+    register(new GearAddon(plugin));
 
     Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGHEST)
         .filter(
-            e ->
-                /*!e.isCancelled()
-                &&*/ e.hasItem()
-                    && e.getItem() != null
-                    && e.getAction() != Action.PHYSICAL)
+            e -> e.useItemInHand() != Event.Result.DENY
+                && e.hasItem()
+                && e.getItem() != null
+                && e.getAction() != Action.PHYSICAL)
         .handler(
             e -> {
               final ItemStack item = e.getItem();
@@ -49,13 +49,15 @@ public final class AddonManager {
                   } else if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
                     ((AbstractItemAddon) addon).onLeftClick(nbt, e);
                   }
+                  e.setUseInteractedBlock(Event.Result.DENY);
+                  e.setUseItemInHand(Event.Result.DENY);
                 }
               }
             })
         .bindWith(plugin);
 
-    Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGHEST)
-        .filter(e -> /*!e.isCancelled() && */ e.hasBlock() && e.getClickedBlock() != null)
+    Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGH)
+        .filter(e -> e.useItemInHand() != Event.Result.DENY && e.hasBlock() && e.getClickedBlock() != null)
         .handler(
             e -> {
               final Block block = e.getClickedBlock();
@@ -66,6 +68,8 @@ public final class AddonManager {
 
                 if (addon instanceof AbstractBlockAddon) {
                   ((AbstractBlockAddon) addon).onInteract(data, e);
+                  e.setUseInteractedBlock(Event.Result.DENY);
+                  e.setUseItemInHand(Event.Result.DENY);
                 }
               }
             })
