@@ -60,9 +60,9 @@ public class AddonGUI {
                               Item.builder(itemStackAddon.buildItemStack())
                                   .bind(
                                       () -> {
-                                        if (InventoryUtils.isBukkitInventoryFull(
-                                            player.getInventory())) {
+                                        if (InventoryUtils.isBukkitInventoryFull(player.getInventory())) {
                                           MessageUtils.sendMessage(player, Message.ADDON_GUI_FULL);
+                                          gui.close();
 
                                           return;
                                         }
