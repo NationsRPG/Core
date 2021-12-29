@@ -5,15 +5,16 @@ import me.byteful.lib.datastore.api.data.StoredGroup;
 import me.byteful.lib.datastore.api.model.Model;
 import me.byteful.lib.datastore.api.model.impl.JSONModelId;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @StoredGroup("users")
-public record User(@NotNull UUID uuid, @NotNull Double balance) implements Model {
+public record User(@NotNull UUID uuid, @Nullable UUID nationUUID, @NotNull Double balance) implements Model {
   @NotNull
   public static User create(@NotNull UUID uuid) {
-    final User user = new User(uuid, 0.0D);
+    final User user = new User(uuid, null, 0.0D);
     user.update();
 
     return user;

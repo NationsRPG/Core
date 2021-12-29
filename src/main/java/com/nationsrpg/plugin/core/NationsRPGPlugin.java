@@ -3,6 +3,7 @@ package com.nationsrpg.plugin.core;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import com.nationsrpg.plugin.core.api.map.SpawnMap;
+import com.nationsrpg.plugin.core.commands.NationCommand;
 import com.nationsrpg.plugin.core.managers.AddonManager;
 import com.nationsrpg.plugin.core.models.nation.NationStructure;
 import com.nationsrpg.plugin.core.models.user.UserStructure;
@@ -77,7 +78,9 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
     ModelManager.registerModelStructure(new UserStructure());
   }
 
-  private void registerCommands() {}
+  private void registerCommands() {
+    commandManager.registerCommand(new NationCommand());
+  }
 
   private void loadSpawnMap() {
     final String mapClass =
