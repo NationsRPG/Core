@@ -35,7 +35,7 @@ public final class InventoryUtils {
     getSlot(gui, x, y).applyFromItem(item);
   }
 
-  public static void fill(int x1, int y1, int x2, int y2, @NotNull Item item, @NotNull Gui gui) {
+  public static void fill(@NotNull Gui gui, int x1, int y1, int x2, int y2, @NotNull Item item) {
     for (int x = x1; x <= x2; x++) {
       for (int y = y1; y <= y2; y++) {
         setSlot(gui, x, y, item);
