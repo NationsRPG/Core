@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class NationStructure implements ModelStructure<Nation> {
+public final class NationStructure implements ModelStructure<Nation> {
   @Override
   public @NotNull ProcessedModel serialize(@NotNull Nation nation) {
     return new JSONProcessedModel(GsonProvider.standard())
