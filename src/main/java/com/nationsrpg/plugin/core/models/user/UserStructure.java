@@ -14,13 +14,15 @@ public final class UserStructure implements ModelStructure<User> {
   public @NotNull ProcessedModel serialize(@NotNull User user) {
     return new JSONProcessedModel(GsonProvider.standard())
         .append("id", ProcessedModelFieldType.UNIQUE_INDEXED, user.uuid())
+        .append("settings", ProcessedModelFieldType.NORMAL, user.settings())
+        .append("nationId", ProcessedModelFieldType.NORMAL, user.nationUUID())
         .append("balance", ProcessedModelFieldType.NORMAL, user.balance());
   }
 
   @Override
   public @NotNull User deserialize(@NotNull ProcessedModel processedModel) {
-    if (processedModel.has("id") && processedModel.has("balance")) {
-      return new User(processedModel.get("id", UUID.class).orElseThrow(), processedModel.get("balance", Double.class).orElseThrow());
+    if (processedModel.has("id") && processedModel.has("settings") && processedModel.has("nationId") && processedModel.has("balance")) {
+      return new User(processedModel.get("id", UUID.class).orElseThrow(), processedModel.get("settings", UserSettings.class).orElseThrow(), processedModel.get("nationId", UUID.class).orElse(null), processedModel.get("balance", Double.class).orElseThrow());
     }
 
     throw new IllegalArgumentException("Outdated model structure! Please modify database manually.");

@@ -5,6 +5,8 @@ import co.aikar.commands.PaperCommandManager;
 import com.nationsrpg.plugin.core.api.map.SpawnMap;
 import com.nationsrpg.plugin.core.commands.NationCommand;
 import com.nationsrpg.plugin.core.managers.AddonManager;
+import com.nationsrpg.plugin.core.managers.NationManager;
+import com.nationsrpg.plugin.core.managers.UserManager;
 import com.nationsrpg.plugin.core.models.nation.NationStructure;
 import com.nationsrpg.plugin.core.models.user.UserStructure;
 import me.byteful.lib.datastore.api.ModelManager;
@@ -24,6 +26,8 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
   private SpawnMap spawn;
   private AddonManager addonManager;
   private BukkitCommandManager commandManager;
+  private NationManager nationManager;
+  private UserManager userManager;
 
   public static NationsRPGPlugin getInstance() {
     return instance;
@@ -32,8 +36,16 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
   @Override
   protected void enable() {
     instance = this;
+
     settings = loadConfigNode("config.yml");
     Log.info("Loaded configuration...");
+
+    loadDataStore();
+    Log.info("Connected to data storage servers...");
+
+    nationManager = new NationManager();
+    userManager = new UserManager();
+    Log.info("Initialized user and nation managers...");
 
     loadSpawnMap();
     Log.info("Loaded spawn map...");
@@ -47,9 +59,6 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
     registerCommands();
     Log.info("Registered commands...");
 
-    loadDataStore();
-    Log.info("Connected to data storage servers...");
-
     Log.info("Successfully started NationsRPG Core Plugin. All core services are now available.");
   }
 
@@ -60,6 +69,7 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
     Log.info(
         "Successfully stopped NationsRPG Core Plugin. All core services are no longer available.");
+
     instance = null;
   }
 
@@ -116,5 +126,13 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
   public BukkitCommandManager getCommandManager() {
     return commandManager;
+  }
+
+  public NationManager getNationManager() {
+    return nationManager;
+  }
+
+  public UserManager getUserManager() {
+    return userManager;
   }
 }

@@ -11,10 +11,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 @StoredGroup("users")
-public record User(@NotNull UUID uuid, @Nullable UUID nationUUID, @NotNull Double balance) implements Model {
+public record User(@NotNull UUID uuid, @NotNull UserSettings settings, @Nullable UUID nationUUID,
+                   @NotNull Double balance) implements Model {
   @NotNull
   public static User create(@NotNull UUID uuid) {
-    final User user = new User(uuid, null, 0.0D);
+    final User user = new User(uuid, UserSettings.defaultSettings(), null, 0.0D);
     user.update();
 
     return user;
