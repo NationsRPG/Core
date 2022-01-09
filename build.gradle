@@ -20,7 +20,7 @@ repositories {
     }
     maven {
         name = 'jitpack'
-        url 'https://jitpack.io'
+        url = 'https://jitpack.io'
     }
     maven {
         url = "https://repo.aikar.co/content/groups/aikar/"
@@ -37,8 +37,8 @@ dependencies {
 
     implementation 'me.lucko:helper:5.6.8'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
-    implementation files('libs/DataStore-API-1.0.0.jar')
-    implementation files('libs/DataStore-MySQL-1.0.0.jar')
+    implementation 'com.github.byteful.datastore:api:1.0.0' //implementation files('libs/DataStore-API-1.0.0.jar')
+    implementation 'com.github.byteful.datastore:mysql:1.0.0' //implementation files('libs/DataStore-MySQL-1.0.0.jar')
 }
 
 def targetJavaVersion = 17
@@ -67,6 +67,7 @@ processResources {
 }
 
 shadowJar {
+    minimize()
     archiveBaseName.set("NationsRPG-Core")
     archiveClassifier.set("")
 
