@@ -67,6 +67,7 @@ processResources {
 }
 
 shadowJar {
+    minimize()
     archiveBaseName.set("NationsRPG-Core")
     archiveClassifier.set("")
 

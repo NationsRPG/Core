@@ -25,16 +25,42 @@ public final class NationManager {
         }
       });
 
-  @NotNull
-  private static final LoadingCache<UUID, Optional<Nation>> cacheByLeader = CacheBuilder.newBuilder()
-      .maximumSize(50)
-      .expireAfterWrite(1, TimeUnit.MINUTES)
-      .build(new CacheLoader<>() {
-        @Override
-        public @NotNull Optional<Nation> load(@NotNull UUID key) {
-          return NationsRPGPlugin.getInstance().getDataStore().get(Nation.class, JSONModelId.of("leader", key.toString()));
-        }
-      });
+  // I commented out all the stuff related to 'cacheByLeader' because I doubt we'd use it.
+
+  //  @NotNull
+  //  private static final LoadingCache<UUID, Optional<Nation>> cacheByLeader =
+  // CacheBuilder.newBuilder()
+  //      .maximumSize(50)
+  //      .expireAfterWrite(1, TimeUnit.MINUTES)
+  //      .build(new CacheLoader<>() {
+  //        @Override
+  //        public @NotNull Optional<Nation> load(@NotNull UUID key) {
+  //          return NationsRPGPlugin.getInstance().getDataStore().get(Nation.class,
+  // JSONModelId.of("leader", key.toString()));
+  //        }
+  //      });
+
+  public NationManager(@NotNull NationsRPGPlugin plugin) {
+    //    Players.forEach(p -> loadAsync(p.getUniqueId())); // Make sure plugin captures any
+    // possible online players. Reloads should not be done, but fail-safes are put in place.
+    //
+    //    Events.subscribe(PlayerJoinEvent.class, EventPriority.LOW)
+    //        .handler(e -> plugin.getUserManager().getUser(e.getPlayer()).ifPresent(user -> {
+    //          if(user.nationUUID() == null) {
+    //            return;
+    //          }
+    //
+    //          loadAsync(user.nationUUID());
+    //        }))
+    //        .bindWith(plugin);
+  }
+
+  //  private void loadAsync(@NotNull UUID uuid) {
+  //    Schedulers.async().run(() -> {
+  //      getNation(uuid).orElseThrow(); // Throw because nation should exist if one's nationUUID is
+  // not-null.
+  //    });
+  //  }
 
   @NotNull
   public Optional<Nation> getNation(@NotNull UUID uuid) {
@@ -47,14 +73,14 @@ public final class NationManager {
     return Optional.empty();
   }
 
-  @NotNull
-  public Optional<Nation> getNationFromLeader(@NotNull UUID leader) {
-    try {
-      return cacheByLeader.get(leader);
-    } catch (ExecutionException e) {
-      e.printStackTrace();
-    }
-
-    return Optional.empty();
-  }
+  //  @NotNull
+  //  public Optional<Nation> getNationFromLeader(@NotNull UUID leader) {
+  //    try {
+  //      return cacheByLeader.get(leader);
+  //    } catch (ExecutionException e) {
+  //      e.printStackTrace();
+  //    }
+  //
+  //    return Optional.empty();
+  //  }
 }

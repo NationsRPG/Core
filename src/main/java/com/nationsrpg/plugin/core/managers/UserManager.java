@@ -6,7 +6,12 @@ import com.google.common.cache.LoadingCache;
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import com.nationsrpg.plugin.core.models.user.User;
 import me.byteful.lib.datastore.api.model.impl.JSONModelId;
+import me.lucko.helper.Events;
+import me.lucko.helper.Schedulers;
+import me.lucko.helper.utils.Players;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -25,6 +30,30 @@ public final class UserManager {
           return NationsRPGPlugin.getInstance().getDataStore().get(User.class, JSONModelId.of("id", key.toString()));
         }
       });
+
+  public UserManager(@NotNull NationsRPGPlugin plugin) {
+    Players.forEach(
+        p ->
+            createOrLoadAsync(
+                p
+                    .getUniqueId())); // Make sure plugin captures any possible online players.
+                                      // Reloads should not be done, but fail-safes are put in
+                                      // place.
+
+    Events.subscribe(PlayerJoinEvent.class, EventPriority.LOWEST)
+        .handler(e -> createOrLoadAsync(e.getPlayer().getUniqueId()))
+        .bindWith(plugin);
+  }
+
+  private void createOrLoadAsync(@NotNull UUID uuid) {
+    Schedulers.async()
+        .run(
+            () -> {
+              if (getUser(uuid).isEmpty()) {
+                cache.put(uuid, Optional.of(User.create(uuid)));
+              }
+            });
+  }
 
   @NotNull
   public Optional<User> getUser(@NotNull UUID uuid) {

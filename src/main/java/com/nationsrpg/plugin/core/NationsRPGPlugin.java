@@ -43,8 +43,8 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
     loadDataStore();
     Log.info("Connected to data storage servers...");
 
-    nationManager = new NationManager();
-    userManager = new UserManager();
+    nationManager = new NationManager(this);
+    userManager = new UserManager(this);
     Log.info("Initialized user and nation managers...");
 
     loadSpawnMap();
