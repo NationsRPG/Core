@@ -12,11 +12,11 @@ import java.util.*;
 
 @StoredGroup("nations")
 public record Nation(@NotNull UUID uuid, @NotNull UUID leader, @NotNull Double balance,
-                     @NotNull Set<NationMember> members) implements Model {
+                     @NotNull Set<NationMember> members, @NotNull Boolean listed) implements Model {
   @NotNull
   public static Nation create(@NotNull UUID leader) {
     final UUID uuid = UUID.randomUUID();
-    final Nation nation = new Nation(uuid, leader, 0.0D, new HashSet<>(Collections.singleton(NationMember.create(leader, NationMember.MemberRank.LEADER))));
+    final Nation nation = new Nation(uuid, leader, 0.0D, new HashSet<>(Collections.singleton(NationMember.create(leader, NationMember.MemberRank.LEADER))), false);
     nation.update();
 
     return nation;
@@ -40,12 +40,12 @@ public record Nation(@NotNull UUID uuid, @NotNull UUID leader, @NotNull Double b
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Nation nation = (Nation) o;
-    return uuid.equals(nation.uuid) && leader.equals(nation.leader) && balance.equals(nation.balance) && members.equals(nation.members);
+    return uuid.equals(nation.uuid) && leader.equals(nation.leader) && balance.equals(nation.balance) && members.equals(nation.members) && listed.equals(nation.listed);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(uuid, leader, balance, members);
+    return Objects.hash(uuid, leader, balance, members, listed);
   }
 
   @Override
@@ -55,6 +55,7 @@ public record Nation(@NotNull UUID uuid, @NotNull UUID leader, @NotNull Double b
         ", leader=" + leader +
         ", balance=" + balance +
         ", members=" + members +
+        ", listed=" + listed +
         '}';
   }
 }

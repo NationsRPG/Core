@@ -30,10 +30,11 @@ public final class AddonManager {
 
     Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGHEST)
         .filter(
-            e -> e.useItemInHand() != Event.Result.DENY
-                && e.hasItem()
-                && e.getItem() != null
-                && e.getAction() != Action.PHYSICAL)
+            e ->
+                e.useItemInHand() != Event.Result.DENY
+                    && e.hasItem()
+                    && e.getItem() != null
+                    && e.getAction() != Action.PHYSICAL)
         .handler(
             e -> {
               final ItemStack item = e.getItem();
@@ -57,7 +58,11 @@ public final class AddonManager {
         .bindWith(plugin);
 
     Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGH)
-        .filter(e -> e.useItemInHand() != Event.Result.DENY && e.hasBlock() && e.getClickedBlock() != null)
+        .filter(
+            e ->
+                e.useItemInHand() != Event.Result.DENY
+                    && e.hasBlock()
+                    && e.getClickedBlock() != null)
         .handler(
             e -> {
               final Block block = e.getClickedBlock();

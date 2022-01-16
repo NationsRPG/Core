@@ -13,14 +13,10 @@ import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractItemStackAddon implements Addon {
-  @NotNull
-  private final NamespacedKey id;
-  @NotNull
-  private final String name;
-  @NotNull
-  private final String[] lore;
-  @NotNull
-  private final Material material;
+  @NotNull private final NamespacedKey id;
+  @NotNull private final String name;
+  @NotNull private final String[] lore;
+  @NotNull private final Material material;
   private final int customModelData;
 
   protected AbstractItemStackAddon(

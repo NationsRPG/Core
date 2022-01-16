@@ -10,17 +10,12 @@ import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractEntityAddon implements Addon {
-  @NotNull
-  private final NationsRPGPlugin plugin;
-  @NotNull
-  private final NamespacedKey id;
-  @NotNull
-  private final EntityType type;
+  @NotNull private final NationsRPGPlugin plugin;
+  @NotNull private final NamespacedKey id;
+  @NotNull private final EntityType type;
 
   protected AbstractEntityAddon(
-      @NotNull NationsRPGPlugin plugin,
-      @NotNull String id,
-      @NotNull EntityType type) {
+      @NotNull NationsRPGPlugin plugin, @NotNull String id, @NotNull EntityType type) {
     this.plugin = plugin;
     this.id = new NamespacedKey(plugin, "addon_" + id);
     this.type = type;

@@ -12,10 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public class DataEntity {
-  @NotNull
-  private final Entity entity;
-  @NotNull
-  private final JavaPlugin plugin;
+  @NotNull private final Entity entity;
+  @NotNull private final JavaPlugin plugin;
 
   public DataEntity(final @NotNull Entity entity, final @NotNull JavaPlugin plugin) {
     this.entity = entity;
@@ -24,7 +22,8 @@ public class DataEntity {
 
   private PersistentDataContainer getPDC() {
     if (!entity.isValid()) {
-      throw new IllegalArgumentException("Entity " + entity + " is not valid and does not have a PDC!");
+      throw new IllegalArgumentException(
+          "Entity " + entity + " is not valid and does not have a PDC!");
     }
 
     return entity.getPersistentDataContainer();
@@ -36,10 +35,11 @@ public class DataEntity {
   }
 
   public void set(@NotNull String key, @NotNull Object value) {
-    getPDC().set(
-        new NamespacedKey(plugin, key),
-        PersistentDataType.STRING,
-        GsonProvider.standard().toJson(value));
+    getPDC()
+        .set(
+            new NamespacedKey(plugin, key),
+            PersistentDataType.STRING,
+            GsonProvider.standard().toJson(value));
   }
 
   @Nullable

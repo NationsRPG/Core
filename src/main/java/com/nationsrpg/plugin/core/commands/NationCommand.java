@@ -11,8 +11,7 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("nation")
 public class NationCommand extends BaseCommand {
-  @Dependency
-  private NationsRPGPlugin plugin;
+  @Dependency private NationsRPGPlugin plugin;
 
   @Default
   public void onNationCommand(Player player) {

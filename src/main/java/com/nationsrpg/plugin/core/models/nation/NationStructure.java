@@ -19,18 +19,28 @@ public final class NationStructure implements ModelStructure<Nation> {
         .append("id", ProcessedModelFieldType.UNIQUE_INDEXED, nation.uuid())
         .append("leader", ProcessedModelFieldType.UNIQUE_INDEXED, nation.leader())
         .append("balance", ProcessedModelFieldType.NORMAL, nation.balance())
-        .append("members", ProcessedModelFieldType.NORMAL, nation.members());
+        .append("members", ProcessedModelFieldType.NORMAL, nation.members())
+        .append("listed", ProcessedModelFieldType.NORMAL, nation.listed());
   }
 
   @Override
   public @NotNull Nation deserialize(@NotNull ProcessedModel processedModel) {
-    if (processedModel.has("id") && processedModel.has("leader") && processedModel.has("balance") && processedModel.has("members")) {
-      final TypeToken<HashSet<NationMember>> setToken = new TypeToken<>() {
-      };
-      return new Nation(processedModel.get("id", UUID.class).orElseThrow(), processedModel.get("leader", UUID.class).orElseThrow(), processedModel.get("balance", Double.class).orElseThrow(), (Set<NationMember>) processedModel.get("members", setToken.getType()).orElseThrow());
+    if (processedModel.has("id")
+        && processedModel.has("leader")
+        && processedModel.has("balance")
+        && processedModel.has("members")
+        && processedModel.has("listed")) {
+      final TypeToken<HashSet<NationMember>> setToken = new TypeToken<>() {};
+      return new Nation(
+          processedModel.get("id", UUID.class).orElseThrow(),
+          processedModel.get("leader", UUID.class).orElseThrow(),
+          processedModel.get("balance", Double.class).orElseThrow(),
+          (Set<NationMember>) processedModel.get("members", setToken.getType()).orElseThrow(),
+          processedModel.get("listed", Boolean.class).orElseThrow());
     }
 
-    throw new IllegalArgumentException("Outdated model structure! Please modify database manually.");
+    throw new IllegalArgumentException(
+        "Outdated model structure! Please modify database manually.");
   }
 
   @Override

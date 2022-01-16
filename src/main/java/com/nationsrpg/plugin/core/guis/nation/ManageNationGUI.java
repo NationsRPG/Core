@@ -14,7 +14,5 @@ public class ManageNationGUI extends Gui {
   }
 
   @Override
-  public void redraw() {
-
-  }
+  public void redraw() {}
 }

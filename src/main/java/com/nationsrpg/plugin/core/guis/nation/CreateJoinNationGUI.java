@@ -71,9 +71,7 @@ public class CreateJoinNationGUI extends Gui {
     }
 
     @Override
-    public void redraw() {
-
-    }
+    public void redraw() {}
   }
 
   private static class JoinNationGUI extends Gui {
@@ -86,8 +84,6 @@ public class CreateJoinNationGUI extends Gui {
     }
 
     @Override
-    public void redraw() {
-
-    }
+    public void redraw() {}
   }
 }

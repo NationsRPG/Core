@@ -21,24 +21,27 @@ import java.util.concurrent.TimeUnit;
 
 public final class UserManager {
   @NotNull
-  private static final LoadingCache<UUID, Optional<User>> cache = CacheBuilder.newBuilder()
-      .maximumSize(100)
-      .expireAfterWrite(1, TimeUnit.MINUTES)
-      .build(new CacheLoader<>() {
-        @Override
-        public @NotNull Optional<User> load(@NotNull UUID key) {
-          return NationsRPGPlugin.getInstance().getDataStore().get(User.class, JSONModelId.of("id", key.toString()));
-        }
-      });
+  private static final LoadingCache<UUID, Optional<User>> cache =
+      CacheBuilder.newBuilder()
+          .maximumSize(100)
+          .expireAfterWrite(1, TimeUnit.MINUTES)
+          .build(
+              new CacheLoader<>() {
+                @Override
+                public @NotNull Optional<User> load(@NotNull UUID key) {
+                  return NationsRPGPlugin.getInstance()
+                      .getDataStore()
+                      .get(User.class, JSONModelId.of("id", key.toString()));
+                }
+              });
 
   public UserManager(@NotNull NationsRPGPlugin plugin) {
     Players.forEach(
         p ->
             createOrLoadAsync(
-                p
-                    .getUniqueId())); // Make sure plugin captures any possible online players.
-                                      // Reloads should not be done, but fail-safes are put in
-                                      // place.
+                p.getUniqueId())); // Make sure plugin captures any possible online players.
+    // Reloads should not be done, but fail-safes are put in
+    // place.
 
     Events.subscribe(PlayerJoinEvent.class, EventPriority.LOWEST)
         .handler(e -> createOrLoadAsync(e.getPlayer().getUniqueId()))
