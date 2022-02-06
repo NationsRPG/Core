@@ -1,14 +1,15 @@
 package com.nationsrpg.plugin.core.managers;
 
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
-import com.nationsrpg.plugin.core.addons.item.GearItemAddon;
+import com.nationsrpg.plugin.core.addons.item.GearAddon;
 import com.nationsrpg.plugin.core.api.addon.AbstractBlockAddon;
 import com.nationsrpg.plugin.core.api.addon.AbstractItemAddon;
 import com.nationsrpg.plugin.core.api.addon.Addon;
 import com.nationsrpg.plugin.core.data.DataBlock;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import com.nationsrpg.plugin.core.data.DataItem;
 import me.lucko.helper.Events;
 import org.bukkit.block.Block;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -25,37 +26,43 @@ public final class AddonManager {
   @NotNull private final Map<String, Addon> addonMap = new HashMap<>();
 
   public AddonManager(@NotNull NationsRPGPlugin plugin) {
-    register(new GearItemAddon());
+    register(new GearAddon(plugin));
 
     Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGHEST)
         .filter(
             e ->
-                /*!e.isCancelled()
-                &&*/ e.hasItem()
+                e.useItemInHand() != Event.Result.DENY
+                    && e.hasItem()
                     && e.getItem() != null
                     && e.getAction() != Action.PHYSICAL)
         .handler(
             e -> {
               final ItemStack item = e.getItem();
               final Action action = e.getAction();
-              final NBTItem nbt = new NBTItem(Objects.requireNonNull(item));
+              final DataItem data = new DataItem(Objects.requireNonNull(item), plugin);
 
-              if (nbt.hasKey("id") && addonMap.containsKey(nbt.getString("id"))) {
-                final Addon addon = addonMap.get(nbt.getString("id"));
+              if (data.has("id") && addonMap.containsKey(data.get("id", String.class))) {
+                final Addon addon = addonMap.get(data.get("id", String.class));
 
                 if (addon instanceof AbstractItemAddon) {
                   if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-                    ((AbstractItemAddon) addon).onRightClick(nbt, e);
+                    ((AbstractItemAddon) addon).onRightClick(data, e);
                   } else if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-                    ((AbstractItemAddon) addon).onLeftClick(nbt, e);
+                    ((AbstractItemAddon) addon).onLeftClick(data, e);
                   }
+                  e.setUseInteractedBlock(Event.Result.DENY);
+                  e.setUseItemInHand(Event.Result.DENY);
                 }
               }
             })
         .bindWith(plugin);
 
-    Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGHEST)
-        .filter(e -> /*!e.isCancelled() && */ e.hasBlock() && e.getClickedBlock() != null)
+    Events.subscribe(PlayerInteractEvent.class, EventPriority.HIGH)
+        .filter(
+            e ->
+                e.useItemInHand() != Event.Result.DENY
+                    && e.hasBlock()
+                    && e.getClickedBlock() != null)
         .handler(
             e -> {
               final Block block = e.getClickedBlock();
@@ -66,6 +73,8 @@ public final class AddonManager {
 
                 if (addon instanceof AbstractBlockAddon) {
                   ((AbstractBlockAddon) addon).onInteract(data, e);
+                  e.setUseInteractedBlock(Event.Result.DENY);
+                  e.setUseItemInHand(Event.Result.DENY);
                 }
               }
             })
@@ -78,18 +87,18 @@ public final class AddonManager {
               final Block block = e.getBlockPlaced();
               final ItemStack item = e.getItemInHand();
               final DataBlock data = new DataBlock(block, plugin);
-              final NBTItem nbt = new NBTItem(item);
+              final DataItem dataItem = new DataItem(item, plugin);
 
               if (!data.isEmpty()) {
                 data.clear();
               }
 
-              if (nbt.hasKey("id") && addonMap.containsKey(nbt.getString("id"))) {
-                data.set("id", nbt.getString("id"));
-                final Addon addon = addonMap.get(nbt.getString("id"));
+              if (dataItem.has("id") && addonMap.containsKey(dataItem.get("id", String.class))) {
+                data.set("id", Objects.requireNonNull(dataItem.get("id", String.class)));
+                final Addon addon = addonMap.get(dataItem.get("id", String.class));
 
                 if (addon instanceof AbstractBlockAddon) {
-                  ((AbstractBlockAddon) addon).onPlace(data, nbt, e);
+                  ((AbstractBlockAddon) addon).onPlace(data, dataItem, e);
                 }
               }
             })
