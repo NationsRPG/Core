@@ -6,6 +6,8 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractFactoryBlock extends AbstractBlockAddon {
+  @NotNull protected final Material production;
+
   protected AbstractFactoryBlock(
       @NotNull NationsRPGPlugin plugin,
       @NotNull String name,
@@ -19,5 +21,7 @@ public abstract class AbstractFactoryBlock extends AbstractBlockAddon {
         new String[] {"&7This factory block produces " + production.name() + ".", "&7", "&7Rate:"},
         block,
         customModelData);
+
+    this.production = production;
   }
 }
