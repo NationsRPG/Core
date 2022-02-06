@@ -1,3 +1,5 @@
+[![master](https://github.com/NationsRPG/Core/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/NationsRPG/Core/actions/workflows/build.yml)
+
 # Core
 
 The core plugin for NationsRPG Minecraft servers.
