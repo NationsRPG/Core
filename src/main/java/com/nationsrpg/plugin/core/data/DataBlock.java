@@ -138,4 +138,9 @@ public class DataBlock implements PersistentDataContainer {
   public PersistentDataAdapterContext getAdapterContext() {
     return pdc.getAdapterContext();
   }
+
+  @Override
+  public boolean has(@NotNull NamespacedKey key) {
+    return pdc.has(key);
+  }
 }

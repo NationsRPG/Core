@@ -1,7 +1,7 @@
 package com.nationsrpg.plugin.core.api.addon;
 
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import com.nationsrpg.plugin.core.data.DataItem;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ public abstract class AbstractItemAddon extends AbstractItemStackAddon {
     super(plugin, id, name, lore, material, customModelData);
   }
 
-  public abstract void onRightClick(@NotNull NBTItem nbt, @NotNull PlayerInteractEvent event);
+  public abstract void onRightClick(@NotNull DataItem data, @NotNull PlayerInteractEvent event);
 
-  public abstract void onLeftClick(@NotNull NBTItem nbt, @NotNull PlayerInteractEvent event);
+  public abstract void onLeftClick(@NotNull DataItem data, @NotNull PlayerInteractEvent event);
 }

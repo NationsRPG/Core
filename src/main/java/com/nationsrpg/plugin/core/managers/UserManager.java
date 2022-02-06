@@ -39,21 +39,21 @@ public final class UserManager {
     Players.forEach(
         p ->
             createOrLoadAsync(
-                p.getUniqueId())); // Make sure plugin captures any possible online players.
+                plugin, p.getUniqueId())); // Make sure plugin captures any possible online players.
     // Reloads should not be done, but fail-safes are put in
     // place.
 
     Events.subscribe(PlayerJoinEvent.class, EventPriority.LOWEST)
-        .handler(e -> createOrLoadAsync(e.getPlayer().getUniqueId()))
+        .handler(e -> createOrLoadAsync(plugin, e.getPlayer().getUniqueId()))
         .bindWith(plugin);
   }
 
-  private void createOrLoadAsync(@NotNull UUID uuid) {
+  private void createOrLoadAsync(@NotNull NationsRPGPlugin plugin, @NotNull UUID uuid) {
     Schedulers.async()
         .run(
             () -> {
               if (getUser(uuid).isEmpty()) {
-                cache.put(uuid, Optional.of(User.create(uuid)));
+                cache.put(uuid, Optional.of(User.create(plugin, uuid)));
               }
             });
   }

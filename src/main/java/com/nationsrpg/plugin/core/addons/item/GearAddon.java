@@ -2,8 +2,8 @@ package com.nationsrpg.plugin.core.addons.item;
 
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import com.nationsrpg.plugin.core.api.addon.AbstractItemAddon;
+import com.nationsrpg.plugin.core.data.DataItem;
 import com.nationsrpg.plugin.core.helpers.ShapedRecipeBuilder;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Recipe;
@@ -26,8 +26,8 @@ public class GearAddon extends AbstractItemAddon {
   }
 
   @Override
-  public void onRightClick(@NotNull NBTItem nbt, @NotNull PlayerInteractEvent event) {}
+  public void onRightClick(@NotNull DataItem data, @NotNull PlayerInteractEvent event) {}
 
   @Override
-  public void onLeftClick(@NotNull NBTItem nbt, @NotNull PlayerInteractEvent event) {}
+  public void onLeftClick(@NotNull DataItem data, @NotNull PlayerInteractEvent event) {}
 }

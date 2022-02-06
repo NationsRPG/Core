@@ -1,8 +1,8 @@
 package com.nationsrpg.plugin.core.api.addon;
 
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
+import com.nationsrpg.plugin.core.data.DataItem;
 import com.nationsrpg.plugin.core.helpers.FormatUtils;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.text3.Text;
 import org.bukkit.Material;
@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractItemStackAddon implements Addon {
+  @NotNull private final NationsRPGPlugin plugin;
   @NotNull private final NamespacedKey id;
   @NotNull private final String name;
   @NotNull private final String[] lore;
@@ -26,6 +27,7 @@ public abstract class AbstractItemStackAddon implements Addon {
       @NotNull String[] lore,
       @NotNull Material material,
       int customModelData) {
+    this.plugin = plugin;
     this.id = new NamespacedKey(plugin, "addon_" + id);
     this.name = name;
     this.lore = lore;
@@ -38,18 +40,19 @@ public abstract class AbstractItemStackAddon implements Addon {
 
   @NotNull
   public ItemStack buildItemStack() {
-    final NBTItem nbt =
-        new NBTItem(
-            ItemStackBuilder.of(getMaterial())
-                .name(Text.colorize(getName()))
-                .lore(FormatUtils.colorize(getLore()))
-                .data(customModelData)
-                .breakable(false)
-                .flag(ItemFlag.HIDE_ATTRIBUTES)
-                .build());
-    nbt.setString("id", getId().value());
+    final ItemStack item =
+        ItemStackBuilder.of(getMaterial())
+            .name(Text.colorize(getName()))
+            .lore(FormatUtils.colorize(getLore()))
+            .data(customModelData)
+            .breakable(false)
+            .flag(ItemFlag.HIDE_ATTRIBUTES)
+            .build();
 
-    return nbt.getItem();
+    final DataItem data = new DataItem(item, plugin);
+    data.set("id", getId().value());
+
+    return data.getItemStack();
   }
 
   @Override

@@ -11,12 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 @StoredGroup("nations")
-public record Nation(@NotNull UUID uuid, @NotNull UUID leader, @NotNull Double balance,
+public record Nation(@NotNull NationsRPGPlugin plugin, @NotNull UUID uuid, @NotNull UUID leader, @NotNull Double balance,
                      @NotNull Set<NationMember> members, @NotNull Boolean listed) implements Model {
   @NotNull
-  public static Nation create(@NotNull UUID leader) {
+  public static Nation create(@NotNull NationsRPGPlugin plugin, @NotNull UUID leader) {
     final UUID uuid = UUID.randomUUID();
-    final Nation nation = new Nation(uuid, leader, 0.0D, new HashSet<>(Collections.singleton(NationMember.create(leader, NationMember.MemberRank.LEADER))), false);
+    final Nation nation = new Nation(plugin, uuid, leader, 0.0D, new HashSet<>(Collections.singleton(NationMember.create(leader, NationMember.MemberRank.LEADER))), false);
     nation.update();
 
     return nation;
@@ -28,11 +28,11 @@ public record Nation(@NotNull UUID uuid, @NotNull UUID leader, @NotNull Double b
   }
 
   public void update() {
-    NationsRPGPlugin.getInstance().getDataStore().set(JSONModelId.of("id", uuid.toString()), this);
+    plugin.getDataStore().set(JSONModelId.of("id", uuid.toString()), this);
   }
 
   public void delete() {
-    NationsRPGPlugin.getInstance().getDataStore().delete(Nation.class, JSONModelId.of("id", uuid.toString()));
+    plugin.getDataStore().delete(Nation.class, JSONModelId.of("id", uuid.toString()));
   }
 
   @Override

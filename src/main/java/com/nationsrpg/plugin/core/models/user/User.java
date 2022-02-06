@@ -11,22 +11,22 @@ import java.util.Objects;
 import java.util.UUID;
 
 @StoredGroup("users")
-public record User(@NotNull UUID uuid, @NotNull UserSettings settings, @Nullable UUID nationUUID,
+public record User(@NotNull NationsRPGPlugin plugin, @NotNull UUID uuid, @NotNull UserSettings settings, @Nullable UUID nationUUID,
                    @NotNull Double balance) implements Model {
   @NotNull
-  public static User create(@NotNull UUID uuid) {
-    final User user = new User(uuid, UserSettings.defaultSettings(), null, 0.0D);
+  public static User create(@NotNull NationsRPGPlugin plugin, @NotNull UUID uuid) {
+    final User user = new User(plugin, uuid, UserSettings.defaultSettings(), null, 0.0D);
     user.update();
 
     return user;
   }
 
   public void update() {
-    NationsRPGPlugin.getInstance().getDataStore().set(JSONModelId.of("id", uuid.toString()), this);
+    plugin.getDataStore().set(JSONModelId.of("id", uuid.toString()), this);
   }
 
   public void delete() {
-    NationsRPGPlugin.getInstance().getDataStore().delete(User.class, JSONModelId.of("id", uuid.toString()));
+    plugin.getDataStore().delete(User.class, JSONModelId.of("id", uuid.toString()));
   }
 
   @Override
