@@ -12,33 +12,35 @@ repositories {
     mavenLocal()
     maven {
         name = 'papermc-repo'
-        url = 'https://papermc.io/repo/repository/maven-public/'
+        url = uri('https://papermc.io/repo/repository/maven-public/')
     }
     maven {
         name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
+        url = uri('https://oss.sonatype.org/content/groups/public/')
     }
     maven {
         name = 'jitpack'
-        url = 'https://jitpack.io'
+        url = uri('https://jitpack.io')
     }
     maven {
-        url = "https://repo.aikar.co/content/groups/aikar/"
+        name = 'aikar'
+        url = uri('https://repo.aikar.co/content/groups/aikar/')
     }
     maven {
-        url = "https://repo.codemc.org/repository/maven-public/"
+        name = 'codemc'
+        url = uri('https://repo.codemc.org/repository/maven-public/')
     }
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:22.0.0'
-    compileOnly 'de.tr7zw:item-nbt-api:2.8.0'
 
     implementation 'me.lucko:helper:5.6.8'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
-    implementation 'com.github.byteful.datastore:api:1.0.0' //implementation files('libs/DataStore-API-1.0.0.jar')
-    implementation 'com.github.byteful.datastore:mysql:1.0.0' //implementation files('libs/DataStore-MySQL-1.0.0.jar')
+    implementation 'com.github.byteful.datastore:api:1.0.0'
+    implementation 'com.github.byteful.datastore:mysql:1.0.0'
+    implementation 'com.github.byteful:MiniMapGUI:v0.1.0'
 }
 
 def targetJavaVersion = 17
@@ -74,6 +76,7 @@ shadowJar {
     relocate 'co.aikar.commands', 'com.nationsrpg.libs.aikar.commands'
     relocate 'co.aikar.locales', 'com.nationsrpg.libs.aikar.locales'
     relocate 'me.lucko', 'com.nationsrpg.libs.lucko'
+    relocate 'me.byteful', 'com.nationsrpg.libs.byteful'
 }
 
 compileJava {

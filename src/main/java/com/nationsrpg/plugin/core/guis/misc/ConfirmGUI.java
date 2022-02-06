@@ -55,8 +55,8 @@ public class ConfirmGUI extends Gui {
 
       InventoryUtils.populateBackground(this);
 
-      InventoryUtils.fill(1, 1, 4, 3, accept, this);
-      InventoryUtils.fill(6, 1, 9, 3, deny, this);
+      InventoryUtils.fill(this, 1, 1, 4, 3, accept);
+      InventoryUtils.fill(this, 6, 1, 9, 3, deny);
     }
   }
 }
