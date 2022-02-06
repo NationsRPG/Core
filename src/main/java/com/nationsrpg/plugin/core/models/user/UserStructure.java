@@ -1,5 +1,6 @@
 package com.nationsrpg.plugin.core.models.user;
 
+import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import me.byteful.lib.datastore.api.model.ModelStructure;
 import me.byteful.lib.datastore.api.model.ProcessedModel;
 import me.byteful.lib.datastore.api.model.ProcessedModelFieldType;
@@ -10,6 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public final class UserStructure implements ModelStructure<User> {
+  @NotNull private final NationsRPGPlugin plugin;
+
+  public UserStructure(@NotNull NationsRPGPlugin plugin) {
+    this.plugin = plugin;
+  }
+
   @Override
   public @NotNull ProcessedModel serialize(@NotNull User user) {
     return new JSONProcessedModel(GsonProvider.standard())
@@ -26,6 +33,7 @@ public final class UserStructure implements ModelStructure<User> {
         && processedModel.has("nationId")
         && processedModel.has("balance")) {
       return new User(
+          plugin,
           processedModel.get("id", UUID.class).orElseThrow(),
           processedModel.get("settings", UserSettings.class).orElseThrow(),
           processedModel.get("nationId", UUID.class).orElse(null),

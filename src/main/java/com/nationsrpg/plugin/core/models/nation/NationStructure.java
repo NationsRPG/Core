@@ -1,6 +1,7 @@
 package com.nationsrpg.plugin.core.models.nation;
 
 import com.google.common.reflect.TypeToken;
+import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import me.byteful.lib.datastore.api.model.ModelStructure;
 import me.byteful.lib.datastore.api.model.ProcessedModel;
 import me.byteful.lib.datastore.api.model.ProcessedModelFieldType;
@@ -13,6 +14,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class NationStructure implements ModelStructure<Nation> {
+  @NotNull private final NationsRPGPlugin plugin;
+
+  public NationStructure(@NotNull NationsRPGPlugin plugin) {
+    this.plugin = plugin;
+  }
+
   @Override
   public @NotNull ProcessedModel serialize(@NotNull Nation nation) {
     return new JSONProcessedModel(GsonProvider.standard())
@@ -32,6 +39,7 @@ public final class NationStructure implements ModelStructure<Nation> {
         && processedModel.has("listed")) {
       final TypeToken<HashSet<NationMember>> setToken = new TypeToken<>() {};
       return new Nation(
+          plugin,
           processedModel.get("id", UUID.class).orElseThrow(),
           processedModel.get("leader", UUID.class).orElseThrow(),
           processedModel.get("balance", Double.class).orElseThrow(),

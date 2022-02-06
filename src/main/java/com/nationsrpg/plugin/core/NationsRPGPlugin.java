@@ -84,8 +84,8 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
             mysql.getNode("database").getString("NationsRPG"));
     bind(dataStore);
 
-    ModelManager.registerModelStructure(new NationStructure());
-    ModelManager.registerModelStructure(new UserStructure());
+    ModelManager.registerModelStructure(new NationStructure(this));
+    ModelManager.registerModelStructure(new UserStructure(this));
   }
 
   private void registerCommands() {
