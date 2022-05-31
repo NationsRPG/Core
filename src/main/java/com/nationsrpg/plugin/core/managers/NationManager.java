@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class NationManager {
   @NotNull
-  private static final LoadingCache<UUID, Optional<Nation>> cacheById =
+  private final LoadingCache<UUID, Optional<Nation>> cacheById =
       CacheBuilder.newBuilder()
           .maximumSize(50)
           .expireAfterWrite(1, TimeUnit.MINUTES)

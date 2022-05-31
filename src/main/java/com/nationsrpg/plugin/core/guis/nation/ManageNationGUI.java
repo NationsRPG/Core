@@ -10,7 +10,7 @@ public class ManageNationGUI extends Gui {
   }
 
   public static void open(@NotNull Player player) {
-    new ManageNationGUI(player, 4, "&f&lCreate or join a nation.").open();
+    new ManageNationGUI(player, 4, "&fCreate or join a nation.").open();
   }
 
   @Override

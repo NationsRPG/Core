@@ -1,8 +1,11 @@
 #
 # Configuration for NationsRPG Core Plugin
 #
-# Authored by byteful#0001
+# Authored by byteful#0001 for v${version}
 #
+
+# Should the core launch in beta mode?
+beta: true
 
 # Settings for MySQL connection.
 mysql:

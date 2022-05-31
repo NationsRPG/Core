@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.nationsrpg.plugin'
-version = '1.0.0'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
@@ -30,17 +30,28 @@ repositories {
         name = 'codemc'
         url = uri('https://repo.codemc.org/repository/maven-public/')
     }
+    maven {
+        name = 'redempt'
+        url = uri('https://redempt.dev')
+    }
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT'
-    compileOnly 'org.jetbrains:annotations:22.0.0'
+    compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
+    compileOnly 'org.jetbrains:annotations:23.0.0'
 
-    implementation 'me.lucko:helper:5.6.9'
+    compileOnly 'me.lucko:helper:5.6.10'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
-    implementation 'com.github.byteful.datastore:api:1.0.0'
-    implementation 'com.github.byteful.datastore:mysql:1.0.0'
+    implementation 'com.github.byteful.datastore:api:1.1.1'
+    implementation('com.github.byteful.datastore:mysql:1.1.1') {
+        exclude group: 'mysql', module: 'mysql-connector-java'
+    }
+    implementation('com.github.byteful.datastore:sqlite:1.1.1') {
+        exclude group: 'org.xerial', module: 'sqlite-jdbc'
+    }
     implementation 'com.github.byteful:MiniMapGUI:v0.1.0'
+    compileOnly 'com.github.Redempt:RedLib:6.5.2'
+    compileOnly 'net.luckperms:api:5.4'
 }
 
 def targetJavaVersion = 17
@@ -69,14 +80,22 @@ processResources {
 }
 
 shadowJar {
-    minimize()
     archiveBaseName.set("NationsRPG-Core")
     archiveClassifier.set("")
 
     relocate 'co.aikar.commands', 'com.nationsrpg.libs.aikar.commands'
     relocate 'co.aikar.locales', 'com.nationsrpg.libs.aikar.locales'
-    relocate 'me.lucko', 'com.nationsrpg.libs.lucko'
     relocate 'me.byteful', 'com.nationsrpg.libs.byteful'
+
+//    dependencies {
+//        exclude(dependency('org.xerial:sqlite-jdbc:3.36.0.3'))
+//        exclude(dependency('mysql:mysql-connector-java:8.0.26'))
+//    }
+
+    exclude 'com/mysql/'
+    exclude 'org/sqlite/'
+    exclude 'org/slf4j/'
+    exclude 'com/google/'
 }
 
 compileJava {

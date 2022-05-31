@@ -1,4 +1,4 @@
-package com.nationsrpg.plugin.core.addons.item;
+package com.nationsrpg.plugin.core.addons.item.materials;
 
 import com.nationsrpg.plugin.core.NationsRPGPlugin;
 import com.nationsrpg.plugin.core.api.addon.AbstractItemAddon;
@@ -11,12 +11,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class GearAddon extends AbstractItemAddon {
   public GearAddon(@NotNull NationsRPGPlugin plugin) {
-    super(plugin, "gear", "&f&lGear", new String[0], Material.STICK, 1);
+    super(
+        plugin,
+        "gear",
+        "Gear",
+        new String[] {"&7This item is used in", "&7various crafting recipes."},
+        Material.STICK,
+        1);
   }
 
   @Override
   public @NotNull Recipe getRecipe() {
-    return ShapedRecipeBuilder.of(getId())
+    return ShapedRecipeBuilder.builder(getId())
         .result(buildItemStack())
         .shape(" 0 ", "010", " 0 ")
         .ingredients(

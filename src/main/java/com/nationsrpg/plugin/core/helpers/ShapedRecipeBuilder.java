@@ -1,5 +1,8 @@
 package com.nationsrpg.plugin.core.helpers;
 
+import com.google.common.base.Preconditions;
+import com.nationsrpg.plugin.core.NationsRPGPlugin;
+import com.nationsrpg.plugin.core.api.addon.AbstractItemStackAddon;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ShapedRecipeBuilder {
   @NotNull private final NamespacedKey key;
@@ -23,7 +27,7 @@ public class ShapedRecipeBuilder {
   }
 
   @NotNull
-  public static ShapedRecipeBuilder of(@NotNull NamespacedKey key) {
+  public static ShapedRecipeBuilder builder(@NotNull NamespacedKey key) {
     return new ShapedRecipeBuilder(key);
   }
 
@@ -69,21 +73,29 @@ public class ShapedRecipeBuilder {
 
   @NotNull
   public ShapedRecipe build() {
-    if (result == null || shape == null || ingredients == null) {
-      throw new IllegalStateException("Not all builder arguments were fulfilled.");
-    }
+    Preconditions.checkNotNull(result, "Result was not set.");
+    Preconditions.checkNotNull(shape, "Shape was not set.");
+    Preconditions.checkArgument(shape.length == 3, "Shape is not fully set.");
+    Preconditions.checkNotNull(ingredients, "Ingredients were not set.");
 
     final ShapedRecipe recipe = new ShapedRecipe(key, result).shape(this.shape);
-    recipe.setIngredient(' ', Material.AIR);
+    if (shape[0].contains(" ") || shape[1].contains(" ") || shape[2].contains(" ")) {
+      recipe.setIngredient(' ', Material.AIR);
+    }
 
     ingredients.forEach(
         (k, v) -> {
           if (v instanceof Material) {
-            recipe.setIngredient(k, (Material) v);
+            recipe.setIngredient(k, new ItemStack((Material) v, 1));
           } else if (v instanceof RecipeChoice) {
             recipe.setIngredient(k, (RecipeChoice) v);
           } else if (v instanceof ItemStack) {
             recipe.setIngredient(k, (ItemStack) v);
+          } else if (v instanceof String) {
+            final AbstractItemStackAddon addon =
+                (AbstractItemStackAddon)
+                    NationsRPGPlugin.getInstance().getAddonManager().getAddons().get(v);
+            recipe.setIngredient(k, Objects.requireNonNull(addon).buildItemStack());
           }
         });
 

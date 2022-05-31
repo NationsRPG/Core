@@ -17,9 +17,7 @@ public class CreateJoinNationGUI extends Gui {
   private static final MenuScheme LAYOUT =
       new MenuScheme()
           .mask("000000000")
-          .mask("000000000")
           .mask("000101000")
-          .mask("000000000")
           .mask("000000000")
           .mask("000000000");
 
@@ -28,7 +26,7 @@ public class CreateJoinNationGUI extends Gui {
   }
 
   public static void open(@NotNull Player player) {
-    new CreateJoinNationGUI(player, 6, "&f&lCreate or join a nation.").open();
+    new CreateJoinNationGUI(player, 4, "&fCreate or join a nation.").open();
   }
 
   @Override
@@ -45,7 +43,7 @@ public class CreateJoinNationGUI extends Gui {
                     }),
 
             // Join a nation
-            ItemStackBuilder.of(Material.RED_WOOL)
+            ItemStackBuilder.of(Material.CHAIN)
                 .build(
                     () -> {
                       close();
@@ -58,7 +56,7 @@ public class CreateJoinNationGUI extends Gui {
     final MenuPopulator populator = LAYOUT.newPopulator(this);
     items.forEach(populator::acceptIfSpace);
 
-    InventoryUtils.populateTools(this, 6);
+    InventoryUtils.populateTools(this, 4);
   }
 
   private static class CreateNationGUI extends Gui {

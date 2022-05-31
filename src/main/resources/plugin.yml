@@ -1,6 +1,10 @@
 name: NationsRPG
 version: '${version}'
 main: com.nationsrpg.plugin.core.NationsRPGPlugin
-api-version: 1.17
-authors: [ byteful ]
+api-version: 1.18
+author: byteful
 description: The core plugin for NationsRPG Minecraft servers.
+depend:
+  - RedLib
+  - helper
+  - LuckPerms
