@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 public final class UserManager {
   @NotNull
-  private static final LoadingCache<UUID, Optional<User>> cache =
+  private final LoadingCache<UUID, Optional<User>> cache =
       CacheBuilder.newBuilder()
           .maximumSize(100)
-          .expireAfterWrite(1, TimeUnit.MINUTES)
+          .expireAfterWrite(30, TimeUnit.SECONDS)
           .build(
               new CacheLoader<>() {
                 @Override

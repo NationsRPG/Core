@@ -1,26 +1,27 @@
 package com.nationsrpg.plugin.core.helpers;
 
-import com.nationsrpg.plugin.core.data.Message;
+import com.nationsrpg.plugin.core.api.constants.Messages;
 import me.lucko.helper.Schedulers;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class ServerUtils {
+  private ServerUtils() {}
+
   public static void startServerRestart(int seconds) {
     AtomicInteger count = new AtomicInteger(seconds);
 
     MessageUtils.broadcastTitle(
-        Message.SERVER_RESTART_TITLE.getMessage(),
-        Message.SERVER_RESTART_SUBTITLE.getFormatted(seconds));
+        Messages.SERVER_RESTART_TITLE.build(), Messages.SERVER_RESTART_SUBTITLE.build(seconds));
 
     Schedulers.sync()
         .runRepeating(
             task -> {
               if (count.get() <= 5) {
                 MessageUtils.broadcastTitle(
-                    Message.SERVER_RESTART_TITLE.getMessage(),
-                    Message.SERVER_RESTART_SUBTITLE.getFormatted(count.get()));
+                    Messages.SERVER_RESTART_TITLE.build(),
+                    Messages.SERVER_RESTART_SUBTITLE.build(count.get()));
               }
 
               if (count.get() <= 0) {

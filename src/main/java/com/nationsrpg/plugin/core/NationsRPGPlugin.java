@@ -2,9 +2,12 @@ package com.nationsrpg.plugin.core;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
+import com.nationsrpg.plugin.core.api.constants.Messages;
 import com.nationsrpg.plugin.core.api.map.SpawnMap;
+import com.nationsrpg.plugin.core.commands.AdminCommand;
 import com.nationsrpg.plugin.core.commands.NationCommand;
 import com.nationsrpg.plugin.core.managers.AddonManager;
+import com.nationsrpg.plugin.core.managers.DisplayManager;
 import com.nationsrpg.plugin.core.managers.NationManager;
 import com.nationsrpg.plugin.core.managers.UserManager;
 import com.nationsrpg.plugin.core.models.nation.NationStructure;
@@ -12,11 +15,14 @@ import com.nationsrpg.plugin.core.models.user.UserStructure;
 import me.byteful.lib.datastore.api.ModelManager;
 import me.byteful.lib.datastore.api.data.DataStore;
 import me.byteful.lib.datastore.mysql.MySQLDataStore;
+import me.byteful.lib.datastore.sqlite.SQLiteDataStore;
 import me.lucko.helper.config.ConfigurationNode;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
-import me.lucko.helper.utils.Log;
+import me.lucko.helper.utils.Players;
 
 import java.lang.reflect.InvocationTargetException;
+
+import static com.nationsrpg.plugin.core.helpers.Log.info;
 
 public final class NationsRPGPlugin extends ExtendedJavaPlugin {
   private static NationsRPGPlugin instance;
@@ -28,6 +34,7 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
   private BukkitCommandManager commandManager;
   private NationManager nationManager;
   private UserManager userManager;
+  private DisplayManager displayManager;
 
   public static NationsRPGPlugin getInstance() {
     return instance;
@@ -35,53 +42,79 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
   @Override
   protected void enable() {
+    Players.forEach(p -> p.kick(Messages.SERVER_START_KICK.build()));
     instance = this;
 
     settings = loadConfigNode("config.yml");
-    Log.info("Loaded configuration...");
+    info("Loaded configuration...");
 
     loadDataStore();
-    Log.info("Connected to data storage servers...");
+    info("Connected to data storage servers...");
 
     nationManager = new NationManager(this);
     userManager = new UserManager(this);
-    Log.info("Initialized user and nation managers...");
+    info("Initialized user and nation managers...");
+
+    displayManager = new DisplayManager(this);
+    info("Initialized chat manager...");
 
     loadSpawnMap();
-    Log.info("Loaded spawn map...");
+    info("Loaded spawn map...");
 
     addonManager = new AddonManager(this);
-    Log.info("Loaded addons...");
+    addonManager.registerAll(this);
+    info("Loaded addons...");
 
     commandManager = new PaperCommandManager(this);
     commandManager.enableUnstableAPI("brigadier");
     commandManager.enableUnstableAPI("help");
     registerCommands();
-    Log.info("Registered commands...");
+    info("Registered commands...");
 
-    Log.info("Successfully started NationsRPG Core Plugin. All core services are now available.");
+    info("Successfully started NationsRPG Core Plugin. All core services are now available.");
   }
 
   @Override
   protected void disable() {
-    commandManager.unregisterCommands();
-    Log.info("Unregistered commands...");
+    if (dataStore != null) {
+      try {
+        dataStore.close();
+        info("Disconnected from data storage servers...");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
 
-    Log.info(
-        "Successfully stopped NationsRPG Core Plugin. All core services are no longer available.");
+    if (commandManager != null) {
+      commandManager.unregisterCommands();
+      info("Unregistered commands...");
+    }
+
+    if (addonManager != null) {
+      addonManager.getBlockDataManager().saveAndClose();
+      info("Closed BlockDataManager...");
+    }
+
+    info("Successfully stopped NationsRPG Core Plugin. All core services are no longer available.");
 
     instance = null;
   }
 
   private void loadDataStore() {
-    final ConfigurationNode mysql = settings.getNode("mysql");
-    dataStore =
-        new MySQLDataStore(
-            mysql.getNode("host").getString("localhost"),
-            mysql.getNode("port").getInt(3306),
-            mysql.getNode("user").getString("root"),
-            mysql.getNode("pass").getString("password"),
-            mysql.getNode("database").getString("NationsRPG"));
+    final boolean beta = settings.getNode("beta").getBoolean(true);
+
+    if (beta) {
+      dataStore = new SQLiteDataStore(getDataFolder().toPath().resolve("data.db"));
+    } else {
+      final ConfigurationNode mysql = settings.getNode("mysql");
+      dataStore =
+          new MySQLDataStore(
+              mysql.getNode("host").getString("localhost"),
+              mysql.getNode("port").getInt(3306),
+              mysql.getNode("user").getString("root"),
+              mysql.getNode("pass").getString("password"),
+              mysql.getNode("database").getString("NationsRPG"));
+    }
     bind(dataStore);
 
     ModelManager.registerModelStructure(new NationStructure(this));
@@ -90,6 +123,7 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
   private void registerCommands() {
     commandManager.registerCommand(new NationCommand());
+    commandManager.registerCommand(new AdminCommand());
   }
 
   private void loadSpawnMap() {
@@ -98,7 +132,7 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
     try {
       spawn = Class.forName(mapClass).asSubclass(SpawnMap.class).getConstructor().newInstance();
-      spawn.initialize();
+      spawn.initialize(this);
     } catch (InstantiationException
         | IllegalAccessException
         | InvocationTargetException
@@ -134,5 +168,9 @@ public final class NationsRPGPlugin extends ExtendedJavaPlugin {
 
   public UserManager getUserManager() {
     return userManager;
+  }
+
+  public DisplayManager getChatManager() {
+    return displayManager;
   }
 }

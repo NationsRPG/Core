@@ -3,6 +3,7 @@ package com.nationsrpg.plugin.core.data;
 import me.lucko.helper.gson.GsonProvider;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class DataItem {
   @NotNull private final ItemStack itemStack;
@@ -21,12 +23,23 @@ public class DataItem {
   }
 
   private PersistentDataContainer getPDC() {
-    if (itemStack.getItemMeta() == null || !itemStack.hasItemMeta()) {
+    if (itemStack.getItemMeta() == null) {
       throw new IllegalArgumentException(
-          "Entity " + itemStack + " is not valid and does not have a PDC!");
+          "Item " + itemStack + " is not valid and does not have a PDC!");
     }
 
     return itemStack.getItemMeta().getPersistentDataContainer();
+  }
+
+  private void applyPDC(Consumer<PersistentDataContainer> consumer) {
+    final ItemMeta meta = itemStack.getItemMeta();
+    if (meta == null) {
+      throw new IllegalArgumentException(
+          "Item " + itemStack + " is not valid and does not have a PDC!");
+    }
+
+    consumer.accept(meta.getPersistentDataContainer());
+    itemStack.setItemMeta(meta);
   }
 
   @NotNull
@@ -35,11 +48,12 @@ public class DataItem {
   }
 
   public void set(@NotNull String key, @NotNull Object value) {
-    getPDC()
-        .set(
-            new NamespacedKey(plugin, key),
-            PersistentDataType.STRING,
-            GsonProvider.standard().toJson(value));
+    applyPDC(
+        pdc ->
+            pdc.set(
+                new NamespacedKey(plugin, key),
+                PersistentDataType.STRING,
+                GsonProvider.standard().toJson(value)));
   }
 
   @Nullable

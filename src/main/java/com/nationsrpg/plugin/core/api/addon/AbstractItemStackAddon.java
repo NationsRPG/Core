@@ -7,13 +7,12 @@ import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.text3.Text;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractItemStackAddon implements Addon {
-  @NotNull private final NationsRPGPlugin plugin;
+  @NotNull protected final NationsRPGPlugin plugin;
   @NotNull private final NamespacedKey id;
   @NotNull private final String name;
   @NotNull private final String[] lore;
@@ -28,8 +27,8 @@ public abstract class AbstractItemStackAddon implements Addon {
       @NotNull Material material,
       int customModelData) {
     this.plugin = plugin;
-    this.id = new NamespacedKey(plugin, "addon_" + id);
-    this.name = name;
+    this.id = new NamespacedKey(plugin, "item_" + id.toLowerCase().replace(" ", "_"));
+    this.name = "&e" + name;
     this.lore = lore;
     this.material = material;
     this.customModelData = customModelData;
@@ -40,13 +39,13 @@ public abstract class AbstractItemStackAddon implements Addon {
 
   @NotNull
   public ItemStack buildItemStack() {
-    final ItemStack item =
+    ItemStack item =
         ItemStackBuilder.of(getMaterial())
             .name(Text.colorize(getName()))
             .lore(FormatUtils.colorize(getLore()))
-            .data(customModelData)
             .breakable(false)
-            .flag(ItemFlag.HIDE_ATTRIBUTES)
+            .hideAttributes()
+            .transformMeta(meta -> meta.setCustomModelData(customModelData))
             .build();
 
     final DataItem data = new DataItem(item, plugin);
